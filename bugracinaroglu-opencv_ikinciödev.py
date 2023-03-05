@@ -9,10 +9,13 @@ class red:
         self.upper_red = np.array([180,255,255]) 
         mask = cv.inRange(self.img_hsv, self.lower_red, self.upper_red)
         self.img_result = cv.bitwise_and(self.frame, self.frame, mask=mask)
-        cv.imshow("dfds",self.img_result)
+        #cv.imshow("deneme",self.img_result)
     def contour(self):
-        self.canny=cv.Canny(self.img_result,125,175)
-        self.contours, self.hierarchies=cv.findContours(self.canny, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
+        #self.canny=cv.Canny(self.img_result,125,175)
+        #self.contours, self.hierarchies=cv.findContours(self.canny, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
+        lab = cv.cvtColor(self.frame, cv.COLOR_BGR2LAB)
+        ret,self.thresh = cv.threshold(lab[:,:,1], 127, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
+        self.contours, self.hierarchies=cv.findContours(self.thresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
         for contour in self.contours:
             (x,y), radius = cv.minEnclosingCircle(contour)
             self.center = (int(x),int(y))
